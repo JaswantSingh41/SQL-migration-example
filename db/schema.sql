@@ -44,6 +44,20 @@ CREATE TYPE public.task_status AS ENUM (
 );
 
 
+--
+-- Name: update_updated_at_column(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.update_updated_at_column() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW.updated_at = CURRENT_TIMESTAMP;
+  RETURN NEW;
+END;
+$$;
+
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -189,6 +203,111 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- Name: idx_project_members_project_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_project_members_project_id ON public.project_members USING btree (project_id);
+
+
+--
+-- Name: idx_project_members_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_project_members_user_id ON public.project_members USING btree (user_id);
+
+
+--
+-- Name: idx_projects_created_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_projects_created_at ON public.projects USING btree (created_at DESC);
+
+
+--
+-- Name: idx_projects_owner_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_projects_owner_id ON public.projects USING btree (owner_id);
+
+
+--
+-- Name: idx_tasks_assigned_to; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_tasks_assigned_to ON public.tasks USING btree (assigned_to);
+
+
+--
+-- Name: idx_tasks_created_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_tasks_created_at ON public.tasks USING btree (created_at DESC);
+
+
+--
+-- Name: idx_tasks_project_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_tasks_project_id ON public.tasks USING btree (project_id);
+
+
+--
+-- Name: idx_tasks_status; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_tasks_status ON public.tasks USING btree (status);
+
+
+--
+-- Name: idx_users_created_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_users_created_at ON public.users USING btree (created_at DESC);
+
+
+--
+-- Name: idx_users_email; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_users_email ON public.users USING btree (email);
+
+
+--
+-- Name: project_members update_project_members_updated_at; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER update_project_members_updated_at BEFORE UPDATE ON public.project_members FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+
+
+--
+-- Name: projects update_projects_updated_at; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER update_projects_updated_at BEFORE UPDATE ON public.projects FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+
+
+--
+-- Name: tasks update_tasks_updated_at; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER update_tasks_updated_at BEFORE UPDATE ON public.tasks FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+
+
+--
+-- Name: user_profiles update_user_profiles_updated_at; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER update_user_profiles_updated_at BEFORE UPDATE ON public.user_profiles FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+
+
+--
+-- Name: users update_users_updated_at; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+
+
+--
 -- Name: project_members project_members_project_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -246,4 +365,7 @@ ALTER TABLE ONLY public.user_profiles
 --
 
 INSERT INTO public.schema_migrations (version) VALUES
-    ('20250513045516');
+    ('20250513045516'),
+    ('20250513090217'),
+    ('20250513145048'),
+    ('20250516161920');
